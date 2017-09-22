@@ -11,6 +11,11 @@ def pretty_scatter(df, x, y):
     ax = df.plot(kind='scatter', x=x, y=y)
     prettify_axis(ax)
     plt.show()
+    
+def pretty_bar(seq):
+    ax = seq.plot(kind='bar')
+    prettify_axis(ax)
+    plt.show()
 
 def pretty_histogram(df, col):
     ax = df[col].plot(kind='hist', bins=100)

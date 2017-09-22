@@ -1,6 +1,7 @@
 __author__ = 'mdippel'
 import numpy as np
-pdu = __import__("pandas-utils")
+import pandasutils as pdu
+from pandasutils.plots import plotutils as plotutils
 
 def print_descriptive_statistics(df):
     for col in df:
@@ -13,10 +14,17 @@ def print_descriptive_statistics(df):
             print("unique count: %s" % str(df[col].nunique()))
             print(df[col].unique())
         print("")
-    
+
+
 def create_descriptive_histograms(df):
     for col in df:
-        pdu.plots.plotutils.pretty_histogram(df, col)
+        print(df[col])
+        if df[col].dtype == np.float64 or df[col].dtype == np.int64:
+            plotutils.pretty_histogram(df, col)
+        else:
+            seq = df[col].value_counts()
+            plotutils.pretty_bar(seq)
+    return
 
 
 if __name__ == "__main__":
