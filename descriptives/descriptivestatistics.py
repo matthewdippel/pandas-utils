@@ -1,6 +1,6 @@
 __author__ = 'mdippel'
 import numpy as np
-import pandasutils as pdu
+import pandas as pd
 from pandasutils.plots import plotutils as plotutils
 
 def print_descriptive_statistics(df):
@@ -66,16 +66,38 @@ def create_all_categorical_split_distributions(df, save_dir):
             if save_dir is not None:
                 fname = save_dir + "categorical-%s-cut_on-%s.pdf" % (data_col, cat_col)
             plotutils.save_ax_as_file(ax, fname)
-            
-        
+
+
+def create_missing_fields_count(df):
+
+    total = df.isnull().sum().sort_values(ascending=False)
+    percent = (df.isnull().sum() / df.isnull().count()).sort_values(ascending=False)
+    missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+    return missing_data
+
+def create_correlation_heatmaps(df, save_dir):
+    ax = plotutils.correlation_matrix_heatmap(df)
+    fname = None
+    if save_dir is not None:
+        fname = save_dir + "correlation_heatmap_all.pdf"
+    plotutils.save_ax_as_file(ax, fname)
+    
+def create_topk_corr_heatmap(df, col, k, save_dir):
+    ax = plotutils.correlation_with_column_topk_heatmap(df, col, k)
+    fname = None
+    if save_dir is not None:
+        fname = save_dir + "correlation_heatmap_with_%s_top%s.pdf" % (col, str(k))
+    plotutils.save_ax_as_file(ax, fname)
+    
 
 if __name__ == "__main__":
     import pandas as pd
     import os
     dir = os.path.dirname(os.path.abspath(__file__))
     iris_df = pd.read_csv(dir + "/../sampledata/iris.csv")
-    
+
     print_descriptive_statistics(iris_df)
     create_descriptive_histograms(iris_df, '/Users/mdippel/test_plots/')
     create_all_numeric_scatterplots(iris_df, '/Users/mdippel/test_plots/')
     create_all_categorical_split_distributions(iris_df, '/Users/mdippel/test_plots/')
+    print(create_missing_fields_count(iris_df))
